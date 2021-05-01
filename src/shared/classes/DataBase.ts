@@ -14,7 +14,7 @@ export class DataBase {
         return DataStore2(name, this.plr);
     }
 
-    public InitStore(name: string, defaultValue?: any): Store {
+    public InitStore(name: string, defaultValue?: unknown): Store {
         const store = this.GetStore(name);
 
         if (defaultValue !== undefined) {
