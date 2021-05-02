@@ -26,6 +26,7 @@
     "@rbxts/eventemitter": "^1.0.0",
     "@rbxts/fast-wait": "^1.0.4",
     "@rbxts/services": "^1.1.4",
+    "rbxts-transform-debug": "^0.4.0",
     "rbxts-transform-env": "^0.4.0",
     "rbxts-transformer-services": "^1.0.0"
   }
