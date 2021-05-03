@@ -1,2 +1,2 @@
 # Carbon
-My simple (probably bad) framework for Roblox TypeScript.
+My simple framework for Roblox TypeScript.
