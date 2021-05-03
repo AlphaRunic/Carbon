@@ -1,16 +1,17 @@
 import { Players, ReplicatedStorage, Workspace, RunService as Runtime } from "@rbxts/services";
-import { Network, NetworkType } from "shared/Network";
 import { BaseComponent } from "./Component";
+import { Disposable } from "./Classes/Utility/Disposable";
+import { UI } from "./Classes/Client/UI";
 
 const Camera = Workspace.CurrentCamera as Camera;
-const Assets = ReplicatedStorage.Assets;
+const Assets = ReplicatedStorage.WaitForChild("Assets") as Folder;
 const Player: Player = Players.LocalPlayer;
 let Character: Model;
-let UI: PlayerGui;
+let PUI: PlayerGui;
 
 if (Player) {
-    Character = Player.Character || Player.CharacterAdded.Wait()[0];
-    UI = Player.WaitForChild("PlayerGui") as PlayerGui;
+    Character = Player.Character ?? Player.CharacterAdded.Wait()[0];
+    PUI = Player.WaitForChild("PlayerGui") as PlayerGui;
 }
 
 export type NullishInstance = 
@@ -27,28 +28,16 @@ export type NullishBoolean =
 
 export type NullishFunction = 
     | Callback
-    | undefined
-    | null;
-
+    | undefined;
+ 
 export class Carbon {
-    public Render: RBXScriptSignal = Runtime.RenderStepped;
-    public Stepped: RBXScriptSignal = Runtime.Stepped;
-    public Update: RBXScriptSignal = Runtime.Heartbeat;
-    public Network: Network;
-    public NetworkType: NetworkType;
+    public static Render: RBXScriptSignal = Runtime.RenderStepped;
+    public static Stepped: RBXScriptSignal = Runtime.Stepped;
+    public static Update: RBXScriptSignal = Runtime.Heartbeat;
 
-    public constructor(src: LuaSourceContainer) {
-        const networkType: NetworkType = 
-            src.ClassName === "Script" ? 
-            NetworkType.Server : NetworkType.Client;
-        
-        this.Network = new Network(networkType);
-        this.NetworkType = networkType;
-    }
-
-    public RunComponents(componentList: BaseComponent[]) {
+    public static RunComponents(componentList: BaseComponent[]) {
         const isClient = Runtime.IsClient()
-        componentList.forEach((component: BaseComponent): void => {
+        componentList.forEach((component: BaseComponent) => {
             if (component.Start)
                 component.Start(component);
 
@@ -62,7 +51,7 @@ export class Carbon {
                     (dt: number): void => {
                         /*  Compiler fails here. 
                             component.Update(dt) should compile to component:Update(dt). 
-                            Alas, it does not.  */
+                            Instead, it compiles to component.Update(dt), therefore I use component.Update(component, dt)  */
                         if (component.Update)
                             component.Update(component, dt);
                     }
@@ -90,4 +79,5 @@ export class Carbon {
     }
 }
 
-export { Assets, Player, Character, UI, Camera };
+export { Disposable, UI };
+export { Assets, Player, Character, Camera };

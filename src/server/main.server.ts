@@ -1,3 +1,3 @@
-import { Carbon as Framework, Assets } from "shared/Carbon";
+import { Carbon, Assets } from "shared/Carbon/Framework";
+import { Remotes } from "shared/Carbon/Remotes";
 
-const Carbon = new Framework(script);

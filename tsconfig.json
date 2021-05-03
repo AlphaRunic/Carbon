@@ -23,7 +23,7 @@
 
 		"plugins": [
 			{
-				"transform": "rbxts-transformer-services"
+				"transform": "rbxts-transform-debug"
 			}
 		]
 	}

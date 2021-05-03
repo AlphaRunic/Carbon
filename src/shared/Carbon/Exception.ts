@@ -1,5 +1,7 @@
+import { $dbg } from "rbxts-transform-debug";
+
 export class Exception {
     constructor(msg?: string, lvl?: number) {
-        error(msg, lvl);
+        error($dbg(msg), lvl);
     }
 }

@@ -1,18 +1,23 @@
+import { Exception } from "../../Exception";
+
 export class ModelAnimator {
     private tracks = new Map<string, AnimationTrack>();
     private controller: Animator;
-    private animFolder: Folder;
+    private animFolder: (Folder | undefined);
 
     constructor(
         public Model: Model,
     ) {
-        const animController = Model.FindFirstChild("AnimationController") as AnimationController;
-        this.controller = animController.WaitForChild("Animator") as Animator;
-        this.animFolder = Model.FindFirstChild("Animations") as Folder;
+        const animController = Model.FindFirstChild("AnimationController") as (AnimationController | undefined);
+        this.controller = animController?.WaitForChild("Animator") as Animator;
+        this.animFolder = Model.FindFirstChild("Animations") as (Folder | undefined);
+
+        if (!this.animFolder)
+            throw new Exception(`Folder named "Animations" does not exist inside of model ${Model}`);
     }
 
     private GetAnimation(animName: string): Animation {
-        return this.animFolder.WaitForChild(animName) as Animation
+        return this.animFolder?.WaitForChild(animName) as Animation
     }
 
     public Animate(animName: string): AnimationTrack {

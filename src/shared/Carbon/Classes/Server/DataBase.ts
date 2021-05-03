@@ -1,17 +1,20 @@
 import DataStore2 from "@rbxts/datastore2"
-import { Carbon as Framework } from "shared/Carbon";
+import { Remotes } from "shared/Carbon/Remotes";
 
-const Carbon = new Framework(script);
-
-export type Store = DataStore2<unknown>;
+type Store = DataStore2<unknown>;
 
 export class DataBase {
-    public constructor(private plr: Player, ...dataTypes: string[]) {
+    private readonly NetworkUpdate = Remotes.Server.Create("DataBaseUpdate");
+    
+    public constructor(
+        private readonly player: Player, 
+        ...dataTypes: string[]
+    ) {
         DataStore2.Combine("DATA", ...dataTypes);
     }
 
     private GetStore(name: string): Store {
-        return DataStore2(name, this.plr);
+        return DataStore2(name, this.player);
     }
 
     public InitStore(name: string, defaultValue?: unknown): Store {
@@ -23,19 +26,14 @@ export class DataBase {
         }
 
         store.Save();
-        store.Update(oldValue => {
-            if (!typeIs(oldValue, "number")) {
-                return 1;
-            }
-            return oldValue + 1;
-        });
 
-        function updateClient(value: unknown): void {
-            Carbon.Network.Emit(`Update ${name}`, value);
+        const db = this;
+        function updateClient(storeName: string, value: unknown): void {
+            store.Save();
+            db.NetworkUpdate.SendToPlayer(db.player, storeName, value);
         }
 
-        store.OnUpdate(updateClient);
-
+        store.OnUpdate((value: unknown) => updateClient(name, value));
         return store;
     }
 

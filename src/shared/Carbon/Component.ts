@@ -1,4 +1,4 @@
-import { NullishFunction } from "./Carbon";
+import { NullishFunction } from "./Framework";
 
 export abstract class BaseComponent {    
     public abstract Name: string;

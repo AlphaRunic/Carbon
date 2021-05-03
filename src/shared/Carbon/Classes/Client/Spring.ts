@@ -1,10 +1,7 @@
-function isNaN(value: unknown) {
-    if (typeOf(value) !== "number") return true;
-    return value !== value;
-}
+import { IsNaN } from "../../Utility/IsNaN";
 
-export = class Spring {
-    static Iterations = 8;
+export class Spring {
+    static readonly Iterations = 8;
 
     public Target = new Vector3();
     public Position = new Vector3();
@@ -22,11 +19,11 @@ export = class Spring {
         let y = force.Y;
         let z = force.Z;
 
-        if (isNaN(x) || x === math.huge || x === -math.huge)
+        if (IsNaN(x) || x === math.huge || x === -math.huge)
             x = 0;
-        if (isNaN(y) || y === math.huge || y === -math.huge)
+        if (IsNaN(y) || y === math.huge || y === -math.huge)
             y = 0;
-        if (isNaN(z) || z === math.huge || z === -math.huge)
+        if (IsNaN(z) || z === math.huge || z === -math.huge)
             z = 0;
 
         this.Velocity = this.Velocity.add(new Vector3(x, y, z));
