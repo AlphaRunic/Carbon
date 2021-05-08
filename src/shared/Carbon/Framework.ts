@@ -1,10 +1,12 @@
-import { Players, ReplicatedStorage, Workspace, RunService as Runtime } from "@rbxts/services";
-import { BaseComponent } from "./Component";
+import { Players, ReplicatedStorage as Replicated, Workspace, RunService as Runtime } from "@rbxts/services";
+import { BaseComponent, NetworkComponent } from "./Internal/Component";
 import { Disposable } from "./Classes/Utility/Disposable";
 import { UI } from "./Classes/Client/UI";
+import { Exception } from "./Internal/Exception";
+import { Find } from "./Utility/Find";
 
 const Camera = Workspace.CurrentCamera as Camera;
-const Assets = ReplicatedStorage.WaitForChild("Assets") as Folder;
+const Assets = Find<Folder>(Replicated, "Assets");
 const Player: Player = Players.LocalPlayer;
 let Character: Model;
 let PUI: PlayerGui;
@@ -26,6 +28,10 @@ export type NullishBoolean =
     | boolean
     | undefined;
 
+export type NullishNumber = 
+    | number
+    | undefined;
+
 export type NullishFunction = 
     | Callback
     | undefined;
@@ -35,11 +41,17 @@ export class Carbon {
     public static Stepped: RBXScriptSignal = Runtime.Stepped;
     public static Update: RBXScriptSignal = Runtime.Heartbeat;
 
-    public static RunComponents(componentList: BaseComponent[]) {
+    public static RunComponents(...componentList: BaseComponent[]) {
         const isClient = Runtime.IsClient()
+
         componentList.forEach((component: BaseComponent) => {
-            if (component.Start)
-                component.Start(component);
+            if (component.Start) {
+                try {
+                    component.Start(component);
+                } catch(err) {
+                    throw new Exception(`[${component.Name}] ${err}`);
+                }
+            }
 
             let step: RBXScriptConnection;
             let upd: RBXScriptConnection;
@@ -52,14 +64,24 @@ export class Carbon {
                         /*  Compiler fails here. 
                             component.Update(dt) should compile to component:Update(dt). 
                             Instead, it compiles to component.Update(dt), therefore I use component.Update(component, dt)  */
-                        if (component.Update)
-                            component.Update(component, dt);
+                        if (component.Update) {
+                            try {
+                                component.Update(component, dt);
+                            } catch(err) {
+                                throw new Exception(`[${component.Name}] ${err}`);
+                            }
+                        }
                     }
                 );
 
                 step = this.Stepped.Connect((time: number, dt: number): void => {
-                    if (component.Run)
-                        component.Run(component, time, dt);
+                    if (component.Run) {
+                        try {
+                            component.Run(component, time, dt);
+                        } catch(err) {
+                            throw new Exception(`[${component.Name}] ${err}`);
+                        }
+                    }
                 });
 
                 if (!component.Update)
@@ -68,8 +90,13 @@ export class Carbon {
                     step.Disconnect();
             } else {
                 upd = this.Update.Connect((dt: number): void => {
-                    if (component.Update)
-                        component.Update(component, dt);
+                    if (component.Update) {
+                        try {
+                            component.Update(component, dt);
+                        } catch(err) {
+                            throw new Exception(`[${component.Name}] ${err}`);
+                        }
+                    }
                 });
 
                 if (!component.Update)
@@ -79,5 +106,10 @@ export class Carbon {
     }
 }
 
-export { Disposable, UI };
 export { Assets, Player, Character, Camera };
+export { 
+    UI,
+    Disposable,
+    NetworkComponent,
+    BaseComponent as Component,
+};

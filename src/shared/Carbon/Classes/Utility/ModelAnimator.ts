@@ -1,4 +1,4 @@
-import { Exception } from "../../Exception";
+import { Exception } from "../../Internal/Exception";
 
 export class ModelAnimator {
     private tracks = new Map<string, AnimationTrack>();
