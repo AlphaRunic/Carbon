@@ -5,7 +5,7 @@ export class Pair<T> {
     ) {}
 }
 
-export class StrictPair<T1, T2> {
+export class TypedPair<T1, T2> {
     public constructor(
         public First: T1,
         public Second: T2

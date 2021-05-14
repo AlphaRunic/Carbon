@@ -1,9 +1,5 @@
 import ObjectEvent from "@rbxts/object-event";
 import { Tweenable } from "../../Classes/Client/Tweenable";
-import { Tween } from "./Tween";
-import { ClickPop } from "./ClickPop";
-import { HoverPop } from "./HoverPop";
-import { GetScaledUDim } from "./GetScaledUDim";
 import { UI } from "shared/Carbon/Classes/Client/UI";
 
 export class LoadBar extends Tweenable {
@@ -12,42 +8,43 @@ export class LoadBar extends Tweenable {
     private info: TweenInfo;
     private defaultSize: UDim2;
 
+    public Progress: number;
     public Finished: ObjectEvent<any>;
 
-    constructor(bar: Frame, progressSpeed: number = .2) {
+    public constructor(bar: Frame, progressSpeed: number = .2) {
         const top = UI.FindElement<Frame>(bar, "Top");
         super(top);
-
         this.progressSpeed = progressSpeed;
         this.top = top;
         this.info = new TweenInfo(this.progressSpeed);
-
         this.defaultSize = this.top.Size;
 
+        this.Progress = 0;
         this.Finished = new ObjectEvent();
-
         this.SetProgress();
     }
 
+    public RandomlyAddProgress(speed: number = 1) {
+        while (this.Progress !== 100)
+            this.AddProgress(math.random(1/3, 1.25) * speed);
+    }
+
+    public AddProgress(progress: number = 1) {
+        this.SetProgress(this.Progress + progress);
+    }
+
     public SetProgress(progress: number = 0) {
-        progress = math.clamp(progress, 5, 100)
+        this.Progress = math.clamp(progress, 5, 100);
         this.Tween(this.info, {
             Size: new UDim2(
-                progress / 100, 
-                this.defaultSize.X.Offset, 
-                this.defaultSize.Y.Scale, 
+                this.Progress / 100,
+                this.defaultSize.X.Offset,
+                this.defaultSize.Y.Scale,
                 this.defaultSize.Y.Offset
             )
         }).Completed.Wait();
 
-        if (progress === 100)
+        if (this.Progress === 100)
             this.Finished.Fire();
     }
-
-    public AddProgress(progress: number = 1) {
-        let prevProgress: number = this.top.Size.X.Scale * 100;
-        this.SetProgress(prevProgress + progress);
-    }
 }
-
-export { Tweenable, Tween, ClickPop, HoverPop, GetScaledUDim };

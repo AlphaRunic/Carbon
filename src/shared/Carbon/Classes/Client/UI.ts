@@ -28,3 +28,5 @@ export class UI {
         return instance.WaitForChild(instanceName) as T;
     }
 }
+
+export { PUI };
