@@ -99,7 +99,8 @@ export class Window extends Roact.Component<WindowProperties> {
 							MouseButton1Click: (rbx: GuiButton) => {
 								const ui = FindAncestor<ScreenGui>(rbx, this.props.Title);
 								const scale = Find<UIScale>(ui, "UIScale");
-								scale.Scale *= 1.1
+								scale.Scale += .1;
+								scale.Scale = math.clamp(scale.Scale, .6, 1.8);
 							}
 						}}
 					>
@@ -123,7 +124,8 @@ export class Window extends Roact.Component<WindowProperties> {
 							MouseButton1Click: (rbx: GuiButton) => {
 								const ui = FindAncestor<ScreenGui>(rbx, this.props.Title);
 								const scale = Find<UIScale>(ui, "UIScale");
-								scale.Scale /= 1.1
+								scale.Scale -= .1;
+								scale.Scale = math.clamp(scale.Scale, .6, 1.8);
 							}
 						}}
 					>
