@@ -33,6 +33,7 @@
     "@rbxts/promisify": "^0.2.2",
     "@rbxts/rain": "^1.0.1",
     "@rbxts/services": "^1.1.4",
+    "@rbxts/snapdragon": "*",
     "rbxts-transform-debug": "^0.4.0",
     "rbxts-transform-env": "^0.4.0",
     "rbxts-transformer-services": "^1.0.0",
