@@ -1,8 +1,11 @@
-import { Component, Disposable, NetworkComponent, UI } from "shared/Carbon/Framework";
+import { UI } from "shared/Carbon/Framework";
+import { DisposableComponent } from "shared/Carbon/Internal/Component";
 import { LoadBar } from "shared/Carbon/Utility/UI";
 
-export class LoadScreenUI extends Disposable implements Component {
-    public readonly Name = "UX";
+export class LoadScreenUI extends DisposableComponent {
+    public constructor() {
+        super("LoadScreenUI");
+    }
 
     public Start() {
         this.GiveTask(() => {
@@ -13,6 +16,7 @@ export class LoadScreenUI extends Disposable implements Component {
             const loadbar = new LoadBar(bar);
             loadbar.Finished.Connect(() => loadScreen.Destroy());
             loadbar.RandomlyAddProgress(2);
-        })
+        });
+        this.Destroy();
     }
 }

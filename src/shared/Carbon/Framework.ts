@@ -1,9 +1,9 @@
 import { Players, ReplicatedStorage as Replicated, Workspace, RunService as Runtime } from "@rbxts/services";
-import { BaseComponent, NetworkComponent } from "./Internal/Component";
 import { Disposable } from "./Classes/Utility/Disposable";
 import { UI } from "./Classes/Client/UI";
 import { Exception } from "./Internal/Exception";
 import { Find } from "./Utility/Find";
+import { Component } from "./Internal/Component";
 
 const Camera = Workspace.CurrentCamera as Camera;
 const Assets = Find<Folder>(Replicated, "Assets");
@@ -39,11 +39,11 @@ export class Carbon {
     public static readonly Update: RBXScriptSignal = Runtime.Heartbeat;
     private static readonly isClient = Runtime.IsClient()
 
-    public static RunComponents(...componentList: BaseComponent[]) {
+    public static RunComponents(...componentList: Component[]) {
         componentList.forEach(component => this.RunComponent(component));
     }
 
-    public static RunComponent(component: BaseComponent) {
+    public static RunComponent(component: Component) {
         if (component.Start) {
             try {
                 component.Start(component);
@@ -108,6 +108,4 @@ export { Assets, Player, Character, Camera };
 export { 
     UI,
     Disposable,
-    NetworkComponent,
-    BaseComponent as Component,
 };

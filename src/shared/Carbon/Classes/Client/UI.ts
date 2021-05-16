@@ -1,7 +1,9 @@
 import { Players } from "@rbxts/services";
 import { WaitFor } from "shared/Carbon/Utility/WaitFor";
 
-const PUI = WaitFor<PlayerGui>(Players.LocalPlayer, "PlayerGui");
+let PUI: PlayerGui;
+if (Players.LocalPlayer)
+    PUI = WaitFor<PlayerGui>(Players.LocalPlayer, "PlayerGui");
 
 export class UI {
     private static Toggle(toggled: boolean) {
